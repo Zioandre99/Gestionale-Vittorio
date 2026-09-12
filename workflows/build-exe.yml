@@ -1,0 +1,32 @@
+name: Crea eseguibile Windows
+
+# Si avvia automaticamente ad ogni caricamento (push) sul ramo principale,
+# oppure manualmente dalla scheda "Actions" di GitHub con il pulsante "Run workflow".
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Scarica il codice
+        uses: actions/checkout@v4
+
+      - name: Prepara Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Installa le librerie necessarie
+        run: pip install -r requirements.txt
+
+      - name: Crea l'eseguibile con PyInstaller
+        run: pyinstaller --noconfirm --onefile --windowed --name "GestionaleMagazzino" main.py
+
+      - name: Pubblica l'eseguibile come allegato scaricabile
+        uses: actions/upload-artifact@v4
+        with:
+          name: GestionaleMagazzino-Windows
+          path: dist/GestionaleMagazzino.exe
