@@ -1,0 +1,31 @@
+name: Crea EXE con PyInstaller
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Preleva il codice
+      uses: actions/checkout@v4
+
+    - name: Configura Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Installa PyInstaller
+      run: pip install pyinstaller
+
+    - name: Crea il file EXE
+      run: pyinstaller --noconsole --onefile app.py
+
+    - name: Salva l'EXE e rendilo scaricabile
+      uses: actions/upload-artifact@v4
+      with:
+        name: Gestionale-Windows
+        path: dist/*.exe
